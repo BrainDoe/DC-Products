@@ -1,0 +1,87 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id                  String   @id @default(uuid())
+  name                String
+  description         String?
+  price               Decimal
+  discountedPrice     Decimal?
+  discountPercentage  Float?   @default(0)
+  stock               Int      @default(0)
+  minQuantity         Int?      @default(5)
+  isActive            Boolean  @default(true)
+  isFeatured          Boolean  @default(true)
+  images              String[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relationships
+  categoryId       String
+  subcategoryId     String?
+  unitId            String?
+
+
+  category           Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  subcategory       Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
+  unit             Unit?       @relation(fields: [unitId], references: [id], onDelete: SetNull)
+
+  orders            OrderItem[]
+}
+
+model Category {
+  id         String    @id @default(uuid())
+  name       String    @unique
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  subcategories Subcategory[]
+  products   Product[]
+}
+
+model Subcategory {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  categoryId  String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  products    Product[]
+}
+
+model Order {
+  id         String    @id @default(uuid())
+  userId     String
+  createdAt  DateTime  @default(now())
+
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id         String    @id @default(uuid())
+  orderId    String
+  productId  String
+  quantity   Int
+  price      Decimal
+
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order      Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Unit {
+  id         String    @id @default(uuid())
+  name       String    @unique // e.g., "kg", "pcs", "liters"
+  abbreviation String  @unique // e.g., "kg", "pc", "L"
+
+  products   Product[]
+}
+
