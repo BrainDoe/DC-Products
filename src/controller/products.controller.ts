@@ -7,8 +7,35 @@ import {
   getProductsByPrice,
   getProductsBySubcategory,
   updateProduct,
+  getUnits,
+  createUnit,
+  deleteUnit,
+  getUnitById,
+  updateUnit,
 } from "../services/products.service";
 import { Request, Response } from "express";
+
+export const getUnitsHandler = async (_: Request, res: Response) => {
+  try {
+    const units = await getUnits();
+    res.status(200).json(units);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getUnitByIdHandler = async (
+  req: Request<{ id: string }, {}, {}>,
+  res: Response
+) => {
+  const { id } = req.params;
+  try {
+    const unit = await getUnitById(id);
+    res.status(200).json(unit);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 export const getProductsHandler = async (_: Request, res: Response) => {
   try {

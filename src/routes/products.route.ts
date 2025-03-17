@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import {
   createProductHandler,
   deleteProductHandler,
@@ -8,17 +8,22 @@ import {
   getProductsByCategoryHandler,
   getProductsByPriceHandler,
   updateProductHandler,
+  getUnitsHandler,
+  getUnitByIdHandler,
 } from "../controller/products.controller";
+// import { getUnitsHandler } from "../controller/unit.controller";
 
-const router = Router();
+const productRouter = Router();
 
-router.get("/", getProductsHandler);
-router.post("/create", createProductHandler);
-router.delete("/delete/:id", deleteProductHandler);
-router.get("/single/:id", getProductByIdHandler);
-router.get("/subcategory/:subcategory", getProductBySubcategoryHandler);
-router.get("/category/:category", getProductsByCategoryHandler);
-router.get("/price/:price", getProductsByPriceHandler);
-router.put("/update/:id", updateProductHandler);
+productRouter.get("/units", getUnitsHandler);
+productRouter.get("/unit/:id", getUnitByIdHandler);
+productRouter.get("/", getProductsHandler);
+productRouter.post("/create", createProductHandler);
+productRouter.delete("/delete/:id", deleteProductHandler);
+productRouter.get("/single/:id", getProductByIdHandler);
+productRouter.get("/subcategory/:subcategory", getProductBySubcategoryHandler);
+productRouter.get("/category/:category", getProductsByCategoryHandler);
+productRouter.get("/price/:price", getProductsByPriceHandler);
+productRouter.put("/update/:id", updateProductHandler);
 
-export default router;
+export default productRouter;
