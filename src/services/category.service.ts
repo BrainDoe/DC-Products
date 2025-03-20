@@ -1,5 +1,5 @@
 import prisma from "../utils/prisma.util";
-import { CategoryTypeBody } from "../validation/controller.validation";
+import { CategoryTypeBody } from "../validation/category.validation";
 
 export async function getCategories() {
   try {

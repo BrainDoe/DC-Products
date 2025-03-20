@@ -14,7 +14,7 @@ import {
   updateCategorySchema,
   CategoryTypeParams,
   CategoryTypeBody,
-} from "../validation/controller.validation";
+} from "../validation/category.validation";
 
 export const getCategoriesHandler = async (
   _: Request,
