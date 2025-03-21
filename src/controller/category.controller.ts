@@ -43,9 +43,7 @@ export const getCategoryByIdHandler = async (
 ) => {
   const {
     params: { id },
-  } = createCategorySchema
-    .pick({ params: true })
-    .parse({ params: req.params.id });
+  } = createCategorySchema.pick({ params: true }).parse({ params: req.params });
   try {
     const category = await getCategoryById(id);
 

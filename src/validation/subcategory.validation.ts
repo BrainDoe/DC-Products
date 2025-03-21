@@ -2,11 +2,11 @@ import { z, string, object } from "zod";
 
 export const createSubcategorySchema = object({
   body: object({
-    name: string({ required_error: "Name is required" }),
+    name: string({ required_error: "Name is required" }).min(3),
     categoryId: string({ required_error: "Category Id is required" }),
   }),
   params: object({
-    id: string({ required_error: "Id is required" }),
+    id: string({ required_error: "Id is required" }).uuid(),
   }),
 });
 

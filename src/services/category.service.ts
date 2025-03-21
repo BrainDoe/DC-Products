@@ -7,7 +7,7 @@ export async function getCategories() {
 
     return categories;
   } catch (error: any) {
-    throw new Error(error);
+    throw Error(error);
   }
 }
 
@@ -21,7 +21,7 @@ export function getCategoryById(id: string) {
 
     return category;
   } catch (error: any) {
-    throw new Error(error);
+    throw Error(error);
   }
 }
 
@@ -33,7 +33,7 @@ export function createCategory(data: CategoryTypeBody) {
 
     return category;
   } catch (error: any) {
-    throw new Error(error);
+    throw Error(error);
   }
 }
 
@@ -50,7 +50,7 @@ export function updateCategory(id: string, data: CategoryTypeBody) {
 
     return category;
   } catch (error: any) {
-    throw new Error(error);
+    throw Error(error);
   }
 }
 
@@ -64,6 +64,6 @@ export function deleteCategory(id: string) {
 
     return category;
   } catch (error: any) {
-    throw new Error(error);
+    throw Error(error);
   }
 }

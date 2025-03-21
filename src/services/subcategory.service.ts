@@ -1,3 +1,4 @@
+import AppError from "../utils/appError.util";
 import prisma from "../utils/prisma.util";
 import {
   SubcategoryTypeBody,
@@ -11,24 +12,33 @@ export async function getSubcategories() {
 
     return subcategories;
   } catch (error: any) {
-    throw new Error(error);
+    throw Error(error);
   }
 }
 
-export function getSubcategoryById(id: string) {
+export async function getSubcategoryById(id: string) {
   try {
-    const subcategory = prisma.subcategory.findUnique({
+    const subcategory = await prisma.subcategory.findUnique({
       where: {
         id,
       },
       include: {
-        category: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
+    if (!subcategory) {
+      throw new AppError("No data found", 400);
+    }
+
     return subcategory;
   } catch (error: any) {
-    throw new Error(error);
+    throw error;
   }
 }
 
@@ -40,7 +50,7 @@ export function createSubcategory(data: SubcategoryTypeBody) {
 
     return subcategory;
   } catch (error: any) {
-    throw new Error(error);
+    throw Error(error);
   }
 }
 
@@ -60,7 +70,7 @@ export function updateSubcategory(
 
     return subcategory;
   } catch (error: any) {
-    throw new Error(error);
+    throw Error(error);
   }
 }
 
@@ -74,6 +84,6 @@ export function deleteSubcategory(id: string) {
 
     return subcategory;
   } catch (error: any) {
-    throw new Error(error);
+    throw Error(error);
   }
 }

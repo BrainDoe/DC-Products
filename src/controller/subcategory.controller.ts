@@ -5,7 +5,7 @@ import {
   getSubcategoryById,
   updateSubcategory,
 } from "../services/subcategory.service";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ResponseType } from "../interfaces/types.interface";
 import {
   SubcategoryType,
@@ -18,7 +18,8 @@ import {
 
 export const getSubcategoriesHandler = async (
   _: Request,
-  res: Response<ResponseType>
+  res: Response<ResponseType>,
+  next: NextFunction
 ) => {
   try {
     const subcategories = await getSubcategories();
@@ -29,27 +30,28 @@ export const getSubcategoriesHandler = async (
       data: subcategories,
     });
   } catch (error: any) {
-    res.status(500).json({
-      responseCode: "11",
-      responseDescription: "Failed",
-      message: error.message,
-    });
+    // res.status(500).json({
+    //   responseCode: "11",
+    //   responseDescription: "Failed",
+    //   message: error.message,
+    // });
+    next(error);
   }
 };
 
 export const getSubcategoryByIdHandler = async (
   req: Request<SubcategoryTypeParams, {}, {}>,
-  res: Response<ResponseType>
+  res: Response<ResponseType>,
+  next: NextFunction
 ) => {
   try {
-    // console.log(req.params.id);
-    // const { params } = createSubcategorySchema
-    //   .pick({ params: true })
-    //   .parse({ params: req.params.id });
+    const {
+      params: { id },
+    } = createSubcategorySchema
+      .pick({ params: true })
+      .parse({ params: req.params });
 
-    // console.log(id);
-
-    const subcategory = await getSubcategoryById(req.params.id);
+    const subcategory = await getSubcategoryById(id);
 
     res.status(200).json({
       responseCode: "00",
@@ -57,17 +59,14 @@ export const getSubcategoryByIdHandler = async (
       data: subcategory,
     });
   } catch (error: any) {
-    res.status(500).json({
-      responseCode: "11",
-      responseDescription: "Failed",
-      message: error.message,
-    });
+    next(error);
   }
 };
 
 export const createSubcategoryHandler = async (
   req: Request<{}, {}, SubcategoryTypeBody>,
-  res: Response<ResponseType>
+  res: Response<ResponseType>,
+  next: NextFunction
 ) => {
   try {
     const { body } = createSubcategorySchema
@@ -82,17 +81,14 @@ export const createSubcategoryHandler = async (
       data: subcategory,
     });
   } catch (error: any) {
-    res.status(500).json({
-      responseCode: "11",
-      responseDescription: "Failed",
-      message: error.message,
-    });
+    next(error);
   }
 };
 
 export const updateSubcategoryHandler = async (
   req: Request<SubcategoryTypeParams, {}, UpdateSubcategoryType["body"]>,
-  res: Response<ResponseType>
+  res: Response<ResponseType>,
+  next: NextFunction
 ) => {
   try {
     const {
@@ -107,17 +103,14 @@ export const updateSubcategoryHandler = async (
       data: subcategory,
     });
   } catch (error: any) {
-    res.status(500).json({
-      responseCode: "11",
-      responseDescription: "Failed",
-      message: error.message,
-    });
+    next(error);
   }
 };
 
 export const deleteSubcategoryHandler = async (
   req: Request<SubcategoryTypeParams, {}, {}>,
-  res: Response<ResponseType>
+  res: Response<ResponseType>,
+  next: NextFunction
 ) => {
   const {
     params: { id },
@@ -133,10 +126,6 @@ export const deleteSubcategoryHandler = async (
       message: "Subcategory deleted successfully",
     });
   } catch (error: any) {
-    res.status(500).json({
-      responseCode: "11",
-      responseDescription: "Failed",
-      message: error.message,
-    });
+    next(error);
   }
 };
