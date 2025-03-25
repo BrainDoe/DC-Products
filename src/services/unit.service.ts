@@ -1,4 +1,6 @@
+import AppError from "../utils/appError.util";
 import prisma from "../utils/prisma.util";
+import { UnitTypeBody, UpdateUnitType } from "../validation/unit.validation";
 
 export async function getUnits() {
   try {
@@ -6,42 +8,43 @@ export async function getUnits() {
 
     return units;
   } catch (error: any) {
-    throw new Error(error);
+    throw error;
   }
 }
 
-export function getUnitById(id: string) {
+export async function getUnitById(id: string) {
   try {
-    const unit = prisma.unit.findUnique({
+    const unit = await prisma.unit.findUnique({
       where: {
         id,
       },
     });
 
+    if (!unit) {
+      throw new AppError("No data found", 400);
+    }
+
     return unit;
   } catch (error: any) {
-    throw new Error(error);
+    throw error;
   }
 }
 
-export function createUnit(data: { name: string; abbreviation: string }) {
+export async function createUnit(data: { name: string; abbreviation: string }) {
   try {
-    const unit = prisma.unit.create({
+    const unit = await prisma.unit.create({
       data,
     });
 
     return unit;
   } catch (error: any) {
-    throw new Error(error);
+    throw error;
   }
 }
 
-export function updateUnit(
-  id: string,
-  data: { name: string; abbreviation: string }
-) {
+export async function updateUnit(id: string, data: UpdateUnitType["body"]) {
   try {
-    const unit = prisma.unit.update({
+    const unit = await prisma.unit.update({
       where: {
         id,
       },
@@ -52,13 +55,13 @@ export function updateUnit(
 
     return unit;
   } catch (error: any) {
-    throw new Error(error);
+    throw error;
   }
 }
 
-export function deleteUnit(id: string) {
+export async function deleteUnit(id: string) {
   try {
-    const unit = prisma.unit.delete({
+    const unit = await prisma.unit.delete({
       where: {
         id,
       },
@@ -66,6 +69,6 @@ export function deleteUnit(id: string) {
 
     return unit;
   } catch (error: any) {
-    throw new Error(error);
+    throw error;
   }
 }

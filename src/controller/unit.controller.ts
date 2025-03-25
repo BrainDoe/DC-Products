@@ -1,5 +1,5 @@
 import prisma from "../utils/prisma.util";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   getUnits,
   getUnitById,
@@ -7,13 +7,20 @@ import {
   updateUnit,
   deleteUnit,
 } from "../services/unit.service";
+import { ResponseType } from "../interfaces/types.interface";
+import { Unit } from "@prisma/client";
+import {
+  createUnitSchema,
+  UnitTypeBody,
+  UnitTypeParams,
+  updateUnitSchema,
+  UpdateUnitType,
+} from "../validation/unit.validation";
 
 export async function getUnitsHandler(
   _: Request,
-  res: Response<
-    | { responseCode: string; responseDescription: string; data: any }
-    | { responseCode: string; responseDescription: string; message: string }
-  >
+  res: Response<ResponseType<Unit[]>>,
+  next: NextFunction
 ) {
   try {
     const units = await getUnits();
@@ -24,95 +31,94 @@ export async function getUnitsHandler(
       data: units,
     });
   } catch (error: any) {
-    res.status(500).json({
-      responseCode: "11",
-      responseDescription: "Failed",
-      message: error.message,
-    });
+    next(error);
   }
 }
 
 export const getUnitByIdHandler = async (
-  req: Request<{ id: string }, {}, {}>,
-  res: Response
+  req: Request<UnitTypeParams, {}, {}>,
+  res: Response<ResponseType<Unit>>,
+  next: NextFunction
 ) => {
-  const { id } = req.params;
   try {
+    const {
+      params: { id },
+    } = createUnitSchema.pick({ params: true }).parse({ params: req.params });
+
     const unit = await getUnitById(id);
+
     res.status(200).json({
       responseCode: "00",
       responseDescription: "Successful",
       data: unit,
     });
   } catch (error: any) {
-    res.status(500).json({
-      responseCode: "11",
-      responseDescription: "Failed",
-      message: error.message,
-    });
+    next(error);
   }
 };
 
 export const createUnitHandler = async (
-  req: Request<{}, {}, { name: string; abbreviation: string }>,
-  res: Response
+  req: Request<{}, {}, UnitTypeBody>,
+  res: Response<ResponseType<Unit>>,
+  next: NextFunction
 ) => {
-  const { name, abbreviation } = req.body;
   try {
-    const unit = await createUnit({ name, abbreviation });
+    const { body } = createUnitSchema
+      .omit({ params: true })
+      .parse({ body: req.body });
+
+    const unit = await createUnit(body);
     res.status(201).json({
       responseCode: "00",
       responseDescription: "Successful",
       data: unit,
     });
   } catch (error: any) {
-    res.status(500).json({
-      responseCode: "11",
-      responseDescription: "Failed",
-      message: error.message,
-    });
+    next(error);
   }
 };
 
 export const updateUnitHandler = async (
-  req: Request<{ id: string }, {}, { name: string; abbreviation: string }>,
-  res: Response
+  req: Request<UnitTypeParams, {}, UpdateUnitType["body"]>,
+  res: Response<ResponseType<Unit>>,
+  next: NextFunction
 ) => {
-  const { id } = req.params;
-  const { name, abbreviation } = req.body;
   try {
-    const unit = await updateUnit(id, { name, abbreviation });
+    const {
+      body,
+      params: { id },
+    } = updateUnitSchema.parse({ params: req.params, body: req.body });
+
+    const unit = await updateUnit(id, body);
+
     res.status(200).json({
       responseCode: "00",
       responseDescription: "Successful",
       data: unit,
     });
   } catch (error: any) {
-    res.status(500).json({
-      responseCode: "11",
-      responseDescription: "Failed",
-      message: error.message,
-    });
+    next(error);
   }
 };
 
 export const deleteUnitHandler = async (
-  req: Request<{ id: string }, {}, {}>,
-  res: Response
+  req: Request<UnitTypeParams, {}, {}>,
+  res: Response<ResponseType<Unit>>,
+  next: NextFunction
 ) => {
-  const { id } = req.params;
   try {
+    const {
+      params: { id },
+    } = createUnitSchema.pick({ params: true }).parse({ params: req.params });
+
     const unit = await deleteUnit(id);
+
     res.status(200).json({
       responseCode: "00",
       responseDescription: "Successful",
       data: unit,
     });
   } catch (error: any) {
-    res.status(500).json({
-      responseCode: "11",
-      responseDescription: "Failed",
-      message: error.message,
-    });
+    next(error);
   }
 };
