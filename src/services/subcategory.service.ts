@@ -12,7 +12,7 @@ export async function getSubcategories() {
 
     return subcategories;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
@@ -50,7 +50,7 @@ export function createSubcategory(data: SubcategoryTypeBody) {
 
     return subcategory;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
@@ -70,7 +70,7 @@ export function updateSubcategory(
 
     return subcategory;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
@@ -84,6 +84,6 @@ export function deleteSubcategory(id: string) {
 
     return subcategory;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }

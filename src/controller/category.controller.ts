@@ -15,10 +15,11 @@ import {
   CategoryTypeParams,
   CategoryTypeBody,
 } from "../validation/category.validation";
+import { Category } from "@prisma/client";
 
 export const getCategoriesHandler = async (
   _: Request,
-  res: Response<ResponseType>
+  res: Response<ResponseType<Category[]>>
 ) => {
   try {
     const categories = await getCategories();
@@ -39,7 +40,7 @@ export const getCategoriesHandler = async (
 
 export const getCategoryByIdHandler = async (
   req: Request<CategoryTypeParams, {}, {}>,
-  res: Response<ResponseType>
+  res: Response<ResponseType<Category>>
 ) => {
   const {
     params: { id },
@@ -63,7 +64,7 @@ export const getCategoryByIdHandler = async (
 
 export const createCategoryHandler = async (
   req: Request<{}, {}, CategoryTypeBody>,
-  res: Response<ResponseType>
+  res: Response<ResponseType<Category>>
 ) => {
   try {
     const { body } = createCategorySchema
@@ -87,7 +88,7 @@ export const createCategoryHandler = async (
 
 export const updateCategoryHandler = async (
   req: Request<CategoryTypeParams, {}, UpdateCategoryType>,
-  res: Response<ResponseType>
+  res: Response<ResponseType<Category>>
 ) => {
   try {
     const {
@@ -112,7 +113,7 @@ export const updateCategoryHandler = async (
 
 export const deleteCategoryHandler = async (
   req: Request<CategoryTypeParams, {}, {}>,
-  res: Response<ResponseType>
+  res: Response<ResponseType<Category>>
 ) => {
   try {
     const {

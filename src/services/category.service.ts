@@ -1,3 +1,4 @@
+import AppError from "../utils/appError.util";
 import prisma from "../utils/prisma.util";
 import { CategoryTypeBody } from "../validation/category.validation";
 
@@ -7,39 +8,43 @@ export async function getCategories() {
 
     return categories;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
-export function getCategoryById(id: string) {
+export async function getCategoryById(id: string) {
   try {
-    const category = prisma.category.findUnique({
+    const category = await prisma.category.findUnique({
       where: {
         id,
       },
     });
 
+    if (!category) {
+      throw new AppError("No data found", 400);
+    }
+
     return category;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
-export function createCategory(data: CategoryTypeBody) {
+export async function createCategory(data: CategoryTypeBody) {
   try {
-    const category = prisma.category.create({
+    const category = await prisma.category.create({
       data,
     });
 
     return category;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
-export function updateCategory(id: string, data: CategoryTypeBody) {
+export async function updateCategory(id: string, data: CategoryTypeBody) {
   try {
-    const category = prisma.category.update({
+    const category = await prisma.category.update({
       where: {
         id,
       },
@@ -50,13 +55,13 @@ export function updateCategory(id: string, data: CategoryTypeBody) {
 
     return category;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
-export function deleteCategory(id: string) {
+export async function deleteCategory(id: string) {
   try {
-    const category = prisma.category.delete({
+    const category = await prisma.category.delete({
       where: {
         id,
       },
@@ -64,6 +69,6 @@ export function deleteCategory(id: string) {
 
     return category;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }

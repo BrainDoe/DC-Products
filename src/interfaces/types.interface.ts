@@ -1,6 +1,7 @@
-export interface ResponseType {
-  responseCode: string;
-  responseDescription: string;
-  data?: any;
-  message?: string;
-}
+export type ResponseType<T> =
+  | {
+      responseCode: string;
+      responseDescription: string;
+      data: T;
+    }
+  | { responseCode: string; responseDescription: string; message: string };

@@ -15,10 +15,11 @@ import {
   createSubcategorySchema,
   updateSubcategorySchema,
 } from "../validation/subcategory.validation";
+import { Subcategory } from "@prisma/client";
 
 export const getSubcategoriesHandler = async (
   _: Request,
-  res: Response<ResponseType>,
+  res: Response<ResponseType<Subcategory[]>>,
   next: NextFunction
 ) => {
   try {
@@ -30,18 +31,13 @@ export const getSubcategoriesHandler = async (
       data: subcategories,
     });
   } catch (error: any) {
-    // res.status(500).json({
-    //   responseCode: "11",
-    //   responseDescription: "Failed",
-    //   message: error.message,
-    // });
     next(error);
   }
 };
 
 export const getSubcategoryByIdHandler = async (
   req: Request<SubcategoryTypeParams, {}, {}>,
-  res: Response<ResponseType>,
+  res: Response<ResponseType<Subcategory>>,
   next: NextFunction
 ) => {
   try {
@@ -65,7 +61,7 @@ export const getSubcategoryByIdHandler = async (
 
 export const createSubcategoryHandler = async (
   req: Request<{}, {}, SubcategoryTypeBody>,
-  res: Response<ResponseType>,
+  res: Response<ResponseType<Subcategory>>,
   next: NextFunction
 ) => {
   try {
@@ -87,7 +83,7 @@ export const createSubcategoryHandler = async (
 
 export const updateSubcategoryHandler = async (
   req: Request<SubcategoryTypeParams, {}, UpdateSubcategoryType["body"]>,
-  res: Response<ResponseType>,
+  res: Response<ResponseType<Subcategory>>,
   next: NextFunction
 ) => {
   try {
@@ -109,21 +105,22 @@ export const updateSubcategoryHandler = async (
 
 export const deleteSubcategoryHandler = async (
   req: Request<SubcategoryTypeParams, {}, {}>,
-  res: Response<ResponseType>,
+  res: Response<ResponseType<Subcategory>>,
   next: NextFunction
 ) => {
-  const {
-    params: { id },
-  } = createSubcategorySchema
-    .omit({ body: true })
-    .parse({ params: req.params.id });
   try {
-    await deleteSubcategory(id);
+    const {
+      params: { id },
+    } = createSubcategorySchema
+      .omit({ body: true })
+      .parse({ params: req.params });
+
+    const response = await deleteSubcategory(id);
 
     res.status(200).json({
       responseCode: "00",
       responseDescription: "Successful",
-      message: "Subcategory deleted successfully",
+      data: response,
     });
   } catch (error: any) {
     next(error);
