@@ -25,6 +25,7 @@ const errorHandler = (
   }
 
   if (err instanceof AppError) {
+    console.log(err);
     statusCode = err.statusCode;
     message = err.message;
   }

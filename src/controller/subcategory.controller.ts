@@ -8,7 +8,6 @@ import {
 import { NextFunction, Request, Response } from "express";
 import { ResponseType } from "../interfaces/types.interface";
 import {
-  SubcategoryType,
   SubcategoryTypeBody,
   SubcategoryTypeParams,
   UpdateSubcategoryType,

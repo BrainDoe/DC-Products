@@ -2,11 +2,16 @@ import { z, string, object } from "zod";
 
 export const createSubcategorySchema = object({
   body: object({
-    name: string({ required_error: "Name is required" }).min(3),
+    name: string({ required_error: "Name is required" }).min(
+      3,
+      "Category name must be a minimum of 3 characters length"
+    ),
     categoryId: string({ required_error: "Category Id is required" }),
   }),
   params: object({
-    id: string({ required_error: "Id is required" }).uuid(),
+    id: string({ required_error: "Id is required" }).uuid(
+      "Id must be valid UUID type"
+    ),
   }),
 });
 
@@ -20,7 +25,9 @@ export const updateSubcategorySchema = object({
     }).optional(),
   }),
   params: object({
-    id: string({ required_error: "Id is required" }),
+    id: string({ required_error: "Id is required" }).uuid(
+      "Id must be valid UUID type"
+    ),
   }),
 });
 
