@@ -1,16 +1,31 @@
 import AppError from "../utils/appError.util";
+import { ParamsResponse } from "../utils/pagination.util";
 import prisma from "../utils/prisma.util";
 import {
   SubcategoryTypeBody,
-  SubcategoryTypeParams,
   UpdateSubcategoryType,
 } from "../validation/subcategory.validation";
 
-export async function getSubcategories() {
+export async function getSubcategories(
+  paginationParams: ParamsResponse,
+  page?: number
+) {
   try {
-    const subcategories = await prisma.subcategory.findMany();
+    const [subcategories, total] = await Promise.all([
+      prisma.subcategory.findMany({
+        skip: paginationParams.skip,
+        take: paginationParams.take,
+        orderBy: { name: paginationParams.orderBy.name },
+      }),
+      prisma.subcategory.count(),
+    ]);
 
-    return subcategories;
+    return {
+      currentPage: Number(page) || 1,
+      totalPages: Math.ceil(total / paginationParams.take),
+      totalItems: total,
+      items: subcategories,
+    };
   } catch (error: any) {
     throw error;
   }

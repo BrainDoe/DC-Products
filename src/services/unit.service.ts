@@ -1,12 +1,28 @@
 import AppError from "../utils/appError.util";
+import { ParamsResponse } from "../utils/pagination.util";
 import prisma from "../utils/prisma.util";
-import { UnitTypeBody, UpdateUnitType } from "../validation/unit.validation";
+import { UpdateUnitType } from "../validation/unit.validation";
 
-export async function getUnits() {
+export async function getUnits(
+  paginationParams: ParamsResponse,
+  page?: number
+) {
   try {
-    const units = await prisma.unit.findMany();
+    const [units, total] = await Promise.all([
+      prisma.unit.findMany({
+        skip: paginationParams.skip,
+        take: paginationParams.take,
+        orderBy: { name: paginationParams.orderBy.name },
+      }),
+      prisma.unit.count(),
+    ]);
 
-    return units;
+    return {
+      currentPage: Number(page) || 1,
+      totalPages: Math.ceil(total / paginationParams.take),
+      totalItems: total,
+      items: units,
+    };
   } catch (error: any) {
     throw error;
   }

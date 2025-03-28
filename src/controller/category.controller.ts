@@ -6,7 +6,7 @@ import {
   updateCategory,
 } from "../services/category.service";
 import { Request, Response } from "express";
-import { ResponseType } from "../interfaces/types.interface";
+import { PaginatedResponse, ResponseType } from "../interfaces/types.interface";
 import {
   CategoryType,
   UpdateCategoryType,
@@ -16,13 +16,25 @@ import {
   CategoryTypeBody,
 } from "../validation/category.validation";
 import { Category } from "@prisma/client";
+import {
+  getPaginationParams,
+  PaginationParams,
+} from "../utils/pagination.util";
 
 export const getCategoriesHandler = async (
-  _: Request,
-  res: Response<ResponseType<Category[]>>
+  req: Request<{}, {}, {}, PaginationParams>,
+  res: Response<ResponseType<PaginatedResponse<Category[]>>>
 ) => {
   try {
-    const categories = await getCategories();
+    const { page, limit, sortBy, order } = req.query;
+    const paginationParams = getPaginationParams({
+      page,
+      limit,
+      sortBy,
+      order,
+    });
+
+    const categories = await getCategories(paginationParams, page);
 
     res.status(200).json({
       responseCode: "00",

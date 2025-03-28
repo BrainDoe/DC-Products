@@ -1,12 +1,28 @@
 import AppError from "../utils/appError.util";
+import { ParamsResponse } from "../utils/pagination.util";
 import prisma from "../utils/prisma.util";
 import { CategoryTypeBody } from "../validation/category.validation";
 
-export async function getCategories() {
+export async function getCategories(
+  paginationParams: ParamsResponse,
+  page?: number
+) {
   try {
-    const categories = await prisma.category.findMany();
+    const [categories, total] = await Promise.all([
+      prisma.category.findMany({
+        skip: paginationParams.skip,
+        take: paginationParams.take,
+        orderBy: { name: paginationParams.orderBy.name },
+      }),
+      prisma.category.count(),
+    ]);
 
-    return categories;
+    return {
+      currentPage: Number(page) || 1,
+      totalPages: Math.ceil(total / paginationParams.take),
+      totalItems: total,
+      items: categories,
+    };
   } catch (error: any) {
     throw error;
   }

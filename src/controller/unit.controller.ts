@@ -7,7 +7,7 @@ import {
   updateUnit,
   deleteUnit,
 } from "../services/unit.service";
-import { ResponseType } from "../interfaces/types.interface";
+import { PaginatedResponse, ResponseType } from "../interfaces/types.interface";
 import { Unit } from "@prisma/client";
 import {
   createUnitSchema,
@@ -16,14 +16,25 @@ import {
   updateUnitSchema,
   UpdateUnitType,
 } from "../validation/unit.validation";
+import {
+  getPaginationParams,
+  PaginationParams,
+} from "../utils/pagination.util";
 
 export async function getUnitsHandler(
-  _: Request,
-  res: Response<ResponseType<Unit[]>>,
+  req: Request<{}, {}, {}, PaginationParams>,
+  res: Response<ResponseType<PaginatedResponse<Unit[]>>>,
   next: NextFunction
 ) {
   try {
-    const units = await getUnits();
+    const { page, limit, sortBy, order } = req.query;
+    const paginationParams = getPaginationParams({
+      page,
+      limit,
+      sortBy,
+      order,
+    });
+    const units = await getUnits(paginationParams, page);
 
     res.status(200).json({
       responseCode: "00",

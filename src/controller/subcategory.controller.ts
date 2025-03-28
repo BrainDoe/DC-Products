@@ -6,7 +6,7 @@ import {
   updateSubcategory,
 } from "../services/subcategory.service";
 import { NextFunction, Request, Response } from "express";
-import { ResponseType } from "../interfaces/types.interface";
+import { PaginatedResponse, ResponseType } from "../interfaces/types.interface";
 import {
   SubcategoryTypeBody,
   SubcategoryTypeParams,
@@ -15,14 +15,33 @@ import {
   updateSubcategorySchema,
 } from "../validation/subcategory.validation";
 import { Subcategory } from "@prisma/client";
+import {
+  getPaginationParams,
+  PaginationParams,
+} from "../utils/pagination.util";
 
 export const getSubcategoriesHandler = async (
-  _: Request,
-  res: Response<ResponseType<Subcategory[]>>,
+  req: Request<{}, {}, {}, PaginationParams>,
+  res: Response<ResponseType<PaginatedResponse<Subcategory[]>>>,
   next: NextFunction
 ) => {
   try {
-    const subcategories = await getSubcategories();
+    const { page, limit, sortBy, order } = req.query;
+    const paginationParams = getPaginationParams({
+      page,
+      limit,
+      sortBy,
+      order,
+    });
+
+    // const paginationParams = getPaginationParams({
+    //   page: page ? parseInt(page as string, 10) : undefined,
+    //   limit: limit ? parseInt(limit as string, 10) : undefined,
+    //   sortBy: sortBy as string,
+    //   order: order as "asc" | "desc",
+    // });
+
+    const subcategories = await getSubcategories(paginationParams, page);
 
     res.status(200).json({
       responseCode: "00",
