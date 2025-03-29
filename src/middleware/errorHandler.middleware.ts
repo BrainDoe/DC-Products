@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import AppError from "../utils/appError.util";
 import { ZodError } from "zod";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 const errorHandler = (
   err: Error,
@@ -24,8 +25,11 @@ const errorHandler = (
     });
   }
 
+  if (err instanceof PrismaClientKnownRequestError) {
+    (statusCode = 400), (message = err.meta?.cause as string);
+  }
+
   if (err instanceof AppError) {
-    console.log(err);
     statusCode = err.statusCode;
     message = err.message;
   }

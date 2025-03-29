@@ -2,38 +2,38 @@ import AppError from "../utils/appError.util";
 import { ParamsResponse } from "../utils/pagination.util";
 import prisma from "../utils/prisma.util";
 import {
-  SubcategoryTypeBody,
-  UpdateSubcategoryType,
-} from "../validation/subcategory.validation";
+  ProductCreateTypeBody,
+  ProductUpdateTypeBody,
+} from "../validation/product.validation";
 
-export async function getSubcategories(
+export async function getProducts(
   paginationParams: ParamsResponse,
   page?: number
 ) {
   try {
-    const [subcategories, total] = await Promise.all([
-      prisma.subcategory.findMany({
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
         skip: paginationParams.skip,
         take: paginationParams.take,
         orderBy: { name: paginationParams.orderBy.name },
       }),
-      prisma.subcategory.count(),
+      prisma.product.count(),
     ]);
 
     return {
       currentPage: Number(page) || 1,
       totalPages: Math.ceil(total / paginationParams.take),
       totalItems: total,
-      items: subcategories,
+      items: products,
     };
   } catch (error: any) {
     throw error;
   }
 }
 
-export async function getSubcategoryById(id: string) {
+export async function getProductById(id: string) {
   try {
-    const subcategory = await prisma.subcategory.findUnique({
+    const product = await prisma.product.findUnique({
       where: {
         id,
       },
@@ -44,37 +44,40 @@ export async function getSubcategoryById(id: string) {
             name: true,
           },
         },
+        subcategory: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
-    if (!subcategory) {
+    if (!product) {
       throw new AppError("No data found", 400);
     }
 
-    return subcategory;
+    return product;
   } catch (error: any) {
     throw error;
   }
 }
 
-export async function createSubcategory(data: SubcategoryTypeBody) {
+export async function createProduct(data: ProductCreateTypeBody) {
   try {
-    const subcategory = await prisma.subcategory.create({
+    const product = await prisma.product.create({
       data,
     });
 
-    return subcategory;
+    return product;
   } catch (error: any) {
     throw error;
   }
 }
 
-export async function updateSubcategory(
-  id: string,
-  data: UpdateSubcategoryType["body"]
-) {
+export async function updateProduct(id: string, data: ProductUpdateTypeBody) {
   try {
-    const subcategory = await prisma.subcategory.update({
+    const product = await prisma.product.update({
       where: {
         id,
       },
@@ -83,21 +86,21 @@ export async function updateSubcategory(
       },
     });
 
-    return subcategory;
+    return product;
   } catch (error: any) {
     throw error;
   }
 }
 
-export async function deleteSubcategory(id: string) {
+export async function deleteProduct(id: string) {
   try {
-    const subcategory = await prisma.subcategory.delete({
+    const product = await prisma.product.delete({
       where: {
         id,
       },
     });
 
-    return subcategory;
+    return product;
   } catch (error: any) {
     throw error;
   }

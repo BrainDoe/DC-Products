@@ -5,10 +5,10 @@ import helmet from "helmet";
 import AppError from "./utils/appError.util";
 import errorHandler from "./middleware/errorHandler.middleware";
 
-import productsRouter from "./routes/products.route";
 import unitRouter from "./routes/unit.route";
 import categoryRouter from "./routes/category.route";
 import subcategoryRouter from "./routes/subcategory.route";
+import productRouter from "./routes/product.route";
 
 const app = express();
 
@@ -16,10 +16,10 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 
-app.use("/api/v1/products", productsRouter);
 app.use("/api/v1/units", unitRouter);
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/subcategories", subcategoryRouter);
+app.use("/api/v1/products", productRouter);
 
 // Catch 404 and forward to error handler
 app.use((_: Request, _res: Response, next: NextFunction) => {
