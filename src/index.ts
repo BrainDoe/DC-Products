@@ -28,9 +28,10 @@ app.use((_: Request, _res: Response, next: NextFunction) => {
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err);
   errorHandler(err, req, res, next);
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 6000;
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));

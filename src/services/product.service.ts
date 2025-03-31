@@ -27,6 +27,7 @@ export async function getProducts(
       items: products,
     };
   } catch (error: any) {
+    console.log(error);
     throw error;
   }
 }

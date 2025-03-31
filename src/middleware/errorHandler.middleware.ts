@@ -12,6 +12,8 @@ const errorHandler = (
   let statusCode = 500;
   let message = "Something went wrong";
 
+  console.log(err);
+
   // Check if the error is a ZodError
   if (err instanceof ZodError) {
     statusCode = 400;
@@ -34,7 +36,9 @@ const errorHandler = (
     message = err.message;
   }
 
+  console.log(err);
   res.status(statusCode).json({
+    error: err,
     status: "error",
     message,
   });
