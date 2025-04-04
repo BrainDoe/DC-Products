@@ -19,6 +19,7 @@ import {
   getPaginationParams,
   PaginationParams,
 } from "../utils/pagination.util";
+import { successResponse } from "../utils/successResponse.util";
 
 export const getProductsHandler = async (
   req: Request<{}, {}, {}, PaginationParams>,
@@ -36,11 +37,12 @@ export const getProductsHandler = async (
 
     const products = await getProducts(paginationParams, page);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: products,
-    });
+    // res.status(200).json({
+    //   responseCode: "00",
+    //   responseDescription: "Successful",
+    //   data: products,
+    // });
+    successResponse(res, products);
   } catch (error: any) {
     next(error);
   }
@@ -60,11 +62,7 @@ export const getProductByIdHandler = async (
 
     const product = await getProductById(id);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: product,
-    });
+    successResponse(res, product);
   } catch (error: any) {
     next(error);
   }
@@ -82,11 +80,7 @@ export const createProductHandler = async (
 
     const product = await createProduct(body);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: product,
-    });
+    successResponse(res, product);
   } catch (error: any) {
     next(error);
   }
@@ -104,11 +98,7 @@ export const updateProductHandler = async (
     } = updateProductSchema.parse({ body: req.body, params: req.params });
     const product = await updateProduct(id, body);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: product,
-    });
+    successResponse(res, product);
   } catch (error: any) {
     next(error);
   }
@@ -126,11 +116,7 @@ export const deleteProductHandler = async (
 
     const product = await deleteProduct(id);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: product,
-    });
+    successResponse(res, product);
   } catch (error: any) {
     next(error);
   }

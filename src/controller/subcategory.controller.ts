@@ -19,6 +19,7 @@ import {
   getPaginationParams,
   PaginationParams,
 } from "../utils/pagination.util";
+import { successResponse } from "../utils/successResponse.util";
 
 export const getSubcategoriesHandler = async (
   req: Request<{}, {}, {}, PaginationParams>,
@@ -43,11 +44,7 @@ export const getSubcategoriesHandler = async (
 
     const subcategories = await getSubcategories(paginationParams, page);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: subcategories,
-    });
+    successResponse(res, subcategories);
   } catch (error: any) {
     next(error);
   }
@@ -67,11 +64,7 @@ export const getSubcategoryByIdHandler = async (
 
     const subcategory = await getSubcategoryById(id);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: subcategory,
-    });
+    successResponse(res, subcategory);
   } catch (error: any) {
     next(error);
   }
@@ -89,11 +82,7 @@ export const createSubcategoryHandler = async (
 
     const subcategory = await createSubcategory(body);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: subcategory,
-    });
+    successResponse(res, subcategory);
   } catch (error: any) {
     next(error);
   }
@@ -111,11 +100,7 @@ export const updateSubcategoryHandler = async (
     } = updateSubcategorySchema.parse({ body: req.body, params: req.params });
     const subcategory = await updateSubcategory(id, body);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: subcategory,
-    });
+    successResponse(res, subcategory);
   } catch (error: any) {
     next(error);
   }
@@ -133,13 +118,9 @@ export const deleteSubcategoryHandler = async (
       .omit({ body: true })
       .parse({ params: req.params });
 
-    const response = await deleteSubcategory(id);
+    const subcategory = await deleteSubcategory(id);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: response,
-    });
+    successResponse(res, subcategory);
   } catch (error: any) {
     next(error);
   }

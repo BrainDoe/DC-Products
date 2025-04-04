@@ -20,6 +20,7 @@ import {
   getPaginationParams,
   PaginationParams,
 } from "../utils/pagination.util";
+import { successResponse } from "../utils/successResponse.util";
 
 export async function getUnitsHandler(
   req: Request<{}, {}, {}, PaginationParams>,
@@ -36,11 +37,7 @@ export async function getUnitsHandler(
     });
     const units = await getUnits(paginationParams, page);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: units,
-    });
+    successResponse(res, units);
   } catch (error: any) {
     next(error);
   }
@@ -58,11 +55,7 @@ export const getUnitByIdHandler = async (
 
     const unit = await getUnitById(id);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: unit,
-    });
+    successResponse(res, unit);
   } catch (error: any) {
     next(error);
   }
@@ -79,11 +72,8 @@ export const createUnitHandler = async (
       .parse({ body: req.body });
 
     const unit = await createUnit(body);
-    res.status(201).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: unit,
-    });
+
+    successResponse(res, unit);
   } catch (error: any) {
     next(error);
   }
@@ -102,11 +92,7 @@ export const updateUnitHandler = async (
 
     const unit = await updateUnit(id, body);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: unit,
-    });
+    successResponse(res, unit);
   } catch (error: any) {
     next(error);
   }
@@ -124,11 +110,7 @@ export const deleteUnitHandler = async (
 
     const unit = await deleteUnit(id);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: unit,
-    });
+    successResponse(res, unit);
   } catch (error: any) {
     next(error);
   }

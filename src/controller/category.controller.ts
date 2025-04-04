@@ -20,6 +20,7 @@ import {
   getPaginationParams,
   PaginationParams,
 } from "../utils/pagination.util";
+import { successResponse } from "../utils/successResponse.util";
 
 export const getCategoriesHandler = async (
   req: Request<{}, {}, {}, PaginationParams>,
@@ -36,11 +37,7 @@ export const getCategoriesHandler = async (
 
     const categories = await getCategories(paginationParams, page);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: categories,
-    });
+    successResponse(res, categories);
   } catch (error: any) {
     res.status(500).json({
       responseCode: "11",
@@ -60,11 +57,7 @@ export const getCategoryByIdHandler = async (
   try {
     const category = await getCategoryById(id);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: category,
-    });
+    successResponse(res, category);
   } catch (error: any) {
     res.status(500).json({
       responseCode: "11",
@@ -84,11 +77,7 @@ export const createCategoryHandler = async (
       .parse({ body: req.body });
     const category = await createCategory(body);
 
-    res.status(201).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: category,
-    });
+    successResponse(res, category);
   } catch (error: any) {
     res.status(500).json({
       responseCode: "11",
@@ -109,11 +98,7 @@ export const updateCategoryHandler = async (
     } = createCategorySchema.parse({ body: req.body, params: req.params });
     const category = await updateCategory(id, body);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: category,
-    });
+    successResponse(res, category);
   } catch (error: any) {
     res.status(500).json({
       responseCode: "11",
@@ -135,11 +120,7 @@ export const deleteCategoryHandler = async (
       .parse({ params: req.params.id });
     const category = await deleteCategory(id);
 
-    res.status(200).json({
-      responseCode: "00",
-      responseDescription: "Successful",
-      data: category,
-    });
+    successResponse(res, category);
   } catch (error: any) {
     res.status(500).json({
       responseCode: "11",
